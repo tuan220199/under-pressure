@@ -15,6 +15,7 @@ def main():
     list_temperature_sensor1 = []
     list_pressure_sensor1 = []
     list_pressure_sensor2 = []
+    time_frame = []
 
     # Turn on live mode to plot data live 
     plt.ion()
@@ -49,9 +50,41 @@ def main():
  
         # Take the real time data when data is received 
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        time_frame.append(now)
         
         def makeFig():
-            plt.plot(list_humidity_sensor1, 'ro-')
+            #figure = plt.subplots(3,2)
+            #figure.tight_layout(pad =0.5)
+            plt.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9, wspace=0.4, hspace=0.4)
+
+            # Humidity of sensor 1 graph 
+            ax1 = plt.subplot(3,2,1)
+            ax1.set_title("Humidity sensor 1")
+            ax1.set_ylabel("Humidity [%RH]")
+            ax1.set_ylim([0,100])
+            ax1.plot(list_humidity_sensor1,'r')
+            
+            # Temperature of sensor 1 graph
+            ax2 = plt.subplot(3,2,3)
+            ax2.set_title("Temperature sensor 1")
+            ax2.set_ylabel("Temperature [oC]")
+            ax2.set_ylim([0,40])
+            ax2.plot(list_temperature_sensor1,'g')
+            
+            # Pressure of sensor 1 graph
+            ax3 = plt.subplot(3,2,5)
+            ax3.set_title("Pressure sensor 1")
+            ax3.set_ylabel("Pressure [mmHg]")
+            ax3.set_ylim([0,5])
+            ax3.plot(list_pressure_sensor1,'b')
+            
+            # Pressure of sensor 2 graph 
+            ax4 = plt.subplot(3,2,6)
+            ax4.set_title("Pressure sensor 2")
+            ax4.set_ylabel("Pressure [mmHg]")
+            ax4.set_ylim([0,5])
+            ax4.plot(list_pressure_sensor2,'c')
+
         #Call draw on to update list
         drawnow(makeFig)
         plt.pause(0.000001)
