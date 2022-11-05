@@ -4,6 +4,7 @@ import datetime
 import numpy
 import matplotlib.pyplot as plt
 from drawnow import *
+import sqlite3
 
 def main():
     # Create the baudrate and serial com
@@ -20,6 +21,12 @@ def main():
     # Turn on live mode to plot data live 
     plt.ion()
 
+    # Set up the database with sqlite 3
+    db = sqlite3.connect("mydatabase.db")
+    
+    # Variable cnt to count number of points in graph 
+    cnt = 0
+    
     # Forever loop to receive and process data
     while True:
         # Check if the arduino and computer is connected or not
@@ -42,15 +49,19 @@ def main():
             pressure_sensor1 = float(data_list[2])
             pressure_sensor2 = float(data_list[3])
 
+        # Take the real time data when data is received 
+        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        time_frame.append(now)
+
+        # Insert valid data into sensors table 
+        db.execute("INSERT INTO sensors (time, humidity1, temperature1, pressure1, pressure2) values (?, ?, ?, ?, ?)",(now, humidity_sensor1, temperature_sensor1, pressure_sensor1, pressure_sensor2))
+        db.commit()
         # Append new measurement into list
         list_humidity_sensor1.append(humidity_sensor1)
         list_temperature_sensor1.append(temperature_sensor1)
         list_pressure_sensor1.append(pressure_sensor1)
         list_pressure_sensor2.append(pressure_sensor2)
- 
-        # Take the real time data when data is received 
-        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        time_frame.append(now)
+
         
         def makeFig():
             #figure = plt.subplots(3,2)
@@ -62,32 +73,41 @@ def main():
             ax1.set_title("Humidity sensor 1")
             ax1.set_ylabel("Humidity [%RH]")
             ax1.set_ylim([0,100])
-            ax1.plot(list_humidity_sensor1,'r')
+            ax1.plot(list_humidity_sensor1,'ro-')
             
             # Temperature of sensor 1 graph
             ax2 = plt.subplot(3,2,3)
             ax2.set_title("Temperature sensor 1")
             ax2.set_ylabel("Temperature [oC]")
             ax2.set_ylim([0,40])
-            ax2.plot(list_temperature_sensor1,'g')
+            ax2.plot(list_temperature_sensor1,'go-')
             
             # Pressure of sensor 1 graph
             ax3 = plt.subplot(3,2,5)
             ax3.set_title("Pressure sensor 1")
             ax3.set_ylabel("Pressure [mmHg]")
             ax3.set_ylim([0,5])
-            ax3.plot(list_pressure_sensor1,'b')
+            ax3.plot(list_pressure_sensor1,'bo-')
             
             # Pressure of sensor 2 graph 
             ax4 = plt.subplot(3,2,6)
             ax4.set_title("Pressure sensor 2")
             ax4.set_ylabel("Pressure [mmHg]")
             ax4.set_ylim([0,5])
-            ax4.plot(list_pressure_sensor2,'c')
+            ax4.plot(list_pressure_sensor2,'co-')
 
         #Call draw on to update list
         drawnow(makeFig)
         plt.pause(0.000001)
+
+        #If the number of points larger than 10 points, it will drop the first item in list (first point)
+        # => reamin 10 points in the graph  
+        cnt = cnt + 1
+        if (cnt>10):
+            list_humidity_sensor1.pop(0)
+            list_temperature_sensor1.pop(0)
+            list_pressure_sensor1.pop(0)
+            list_pressure_sensor2.pop(0)
 
         time.sleep(1)
         #print(f"{now},{humidity_sensor1},{temperature_sensor1},{pressure_sensor1},{pressure_sensor2}")
