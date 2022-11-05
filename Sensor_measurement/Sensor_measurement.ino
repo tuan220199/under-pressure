@@ -9,7 +9,7 @@ void setup() {
   Serial.begin(9600);
 
   // wait for serial port to open
-  if (!sensor.begin()) {
+ if (!sensor.begin()) {
     Serial.println("Did not find Si7021 sensor!");
     while (true)
       ;
@@ -36,11 +36,7 @@ void setup() {
 }
 
 void loop() {
-  Serial.print("Humidity:    ");
-  Serial.print(sensor.readHumidity(), 2);
-  Serial.print("\tTemperature: ");
-  Serial.println(sensor.readTemperature(), 2);
-  delay(1000);
+ 
 
   // Toggle heater enabled state every 30 seconds
   // An ~1.8 degC temperature increase can be noted when heater is enabled
@@ -57,11 +53,20 @@ void loop() {
     int sensorValue = analogRead(A0);
   // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
   float voltage = sensorValue * (5.0 / 1023.0);
+    int sensorValue1 = analogRead(A1);
+  // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
+  float voltage1 = sensorValue1 * (5.0 / 1023.0);
   // Print out the value you read:
-  Serail.print("Force");
-  Serial.println(voltage);
+  Serial.print(sensor.readHumidity(), 2);
+  Serial.print(",");
+  Serial.print(sensor.readTemperature(), 2);
+  Serial.print(",");
+  Serial.print(voltage);
+  Serial.print(",");
+  Serial.print(voltage1);
+  Serial.println();
   // Wait 100 milliseconds
   delay(1000);
   }
-}
+
 
