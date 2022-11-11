@@ -2,7 +2,7 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
-import sqlite3
+
 
 def main():
     """Run administrative tasks."""
@@ -17,13 +17,7 @@ def main():
         ) from exc
     execute_from_command_line(sys.argv)
 
-    #Take the data from sqlite3 database
-    db = sqlite3.connect("mydatabase.db")
-
-    time = db.execute("SELECT time FROM sensors")
-    db.commit()
-
-    print(time)
+    
 
 
 if __name__ == '__main__':
