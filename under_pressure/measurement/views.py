@@ -50,6 +50,7 @@ def index(request):
     average_total_temperature = avergae_list(list_average30_temperature_sensor1)
     average_total_pressure_sensor1 = avergae_list(list_average30_pressure_sensor1)
     average_total_pressure_sensor2 = avergae_list(list_average30_pressure_sensor2)
+    
     return render (request, "measurement/index.html",{
         "average_total_humidity": average_total_humidity,
         "average_total_temperature": average_total_temperature,
