@@ -10,6 +10,12 @@ def index(request):
     db = sqlite3.connect("mydatabase.db")
     data = db.execute("SELECT * FROM sensors")
     data = data.fetchall()
+    data_lastest = data[-1]
+    return render (request, "measurement/index.html",{
+        "data": data_lastest
+    })
+    '''
+    #Divide data into chucks of 30 
     number_data = len(data)
     number_group_data = number_data//30
 
@@ -60,5 +66,5 @@ def index(request):
         "list_average30_temperature_sensor1": list_average30_temperature_sensor1,
         "list_average30_pressure_sensor1": list_average30_pressure_sensor1,
         "list_average30_pressure_sensor2": list_average30_pressure_sensor2
-    })
+    })'''
 # Create your views here.

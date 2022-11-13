@@ -8,7 +8,7 @@ import sqlite3
 
 def main():
     # Create the baudrate and serial com
-    arduinoData = serial.Serial("com4", 9600)
+    arduinoData = serial.Serial("COM4", 9600)
     time.sleep(1)
 
     # Create series of lists for measurements
@@ -22,7 +22,7 @@ def main():
     plt.ion()
 
     # Set up the database with sqlite 3
-    db = sqlite3.connect("mydatabase.db")
+    db = sqlite3.connect("under_pressure/mydatabase.db")
     
     # Variable cnt to count number of points in graph 
     cnt = 0
@@ -69,28 +69,28 @@ def main():
             plt.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9, wspace=0.4, hspace=0.4)
 
             # Humidity of sensor 1 graph 
-            ax1 = plt.subplot(3,2,1)
+            ax1 = plt.subplot(2,2,1)
             ax1.set_title("Humidity sensor 1")
             ax1.set_ylabel("Humidity [%RH]")
             ax1.set_ylim([0,100])
             ax1.plot(list_humidity_sensor1,'ro-')
             
             # Temperature of sensor 1 graph
-            ax2 = plt.subplot(3,2,3)
+            ax2 = plt.subplot(2,2,2)
             ax2.set_title("Temperature sensor 1")
             ax2.set_ylabel("Temperature [oC]")
             ax2.set_ylim([0,40])
             ax2.plot(list_temperature_sensor1,'go-')
             
             # Pressure of sensor 1 graph
-            ax3 = plt.subplot(3,2,5)
+            ax3 = plt.subplot(2,2,3)
             ax3.set_title("Pressure sensor 1")
             ax3.set_ylabel("Pressure [mmHg]")
             ax3.set_ylim([0,5])
             ax3.plot(list_pressure_sensor1,'bo-')
             
             # Pressure of sensor 2 graph 
-            ax4 = plt.subplot(3,2,6)
+            ax4 = plt.subplot(2,2,4)
             ax4.set_title("Pressure sensor 2")
             ax4.set_ylabel("Pressure [mmHg]")
             ax4.set_ylim([0,5])
