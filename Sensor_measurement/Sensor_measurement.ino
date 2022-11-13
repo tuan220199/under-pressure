@@ -36,34 +36,45 @@ void setup() {
 }
 
 void loop() {
- 
-
-  // Toggle heater enabled state every 30 seconds
-  // An ~1.8 degC temperature increase can be noted when heater is enabled
- /* if (++loopCnt == 30) {
-    enableHeater = !enableHeater;
-    sensor.heater(enableHeater);
-    Serial.print("Heater Enabled State: ");
-    if (sensor.isHeaterEnabled())
-      Serial.println("ENABLED");
-    else
-      Serial.println("DISABLED");
-       
-    loopCnt = 0;*/
-    int sensorValue = analogRead(A0);
   // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
-  float voltage = sensorValue * (5.0 / 1023.0);
-    int sensorValue1 = analogRead(A1);
-  // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
+  // Pressure sensor 1
+  int sensorValue1 = analogRead(A0); 
   float voltage1 = sensorValue1 * (5.0 / 1023.0);
+
+  // Pressure sensor 2
+  int sensorValue2 = analogRead(A1);
+  float voltage2 = sensorValue2 * (5.0 / 1023.0);
+
+  
+  //Calibration 
+  //Diameter of sensor area 9.53mm; area of sensor
+  float d = 9.53*pow(10,-3);
+  float r = d/2;
+  float A = 3.14*pow(r,2);
+
+  //Convert voltage into force 
+  float force1 = (voltage1 + 0.551) / (0.1665);
+  float force2 = (voltage2 + 0.551) / (0.1665);
+
+  //Convert force into pressure (unit Pa=N/m2)
+  float pressure1 = force1/A;
+  float pressure2 = force2/A;
+
+  //Convert unit Pa into mmHg (unit mmHg)
+  pressure1 /= 133.322;
+  pressure2 /= 133.322;
+
+  //Error measurement calibration
+  pressure1 /= 12.8;
+  pressure2 /= 12.8;
   // Print out the value you read:
   Serial.print(sensor.readHumidity(), 2);
   Serial.print(",");
   Serial.print(sensor.readTemperature(), 2);
   Serial.print(",");
-  Serial.print(voltage);
+  Serial.print(pressure1);
   Serial.print(",");
-  Serial.print(voltage1);
+  Serial.print(pressure2);
   Serial.println();
   // Wait 100 milliseconds
   delay(1000);
