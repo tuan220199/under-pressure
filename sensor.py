@@ -21,6 +21,13 @@ def main():
     # Set up the database with sqlite 3
     db = sqlite3.connect("under_pressure/mydatabase.db")
 
+    #Create threshold values for Temperature, Humidity, Pressure
+    temperature_threshold = 37
+    humidity_threshold = 70 
+    pressure_threshold = 32
+    Tp1 = 0
+    Tp2 = 0
+
     # Forever loop to receive and process data
     while True:
         # Check if the arduino and computer is connected or not
@@ -47,11 +54,61 @@ def main():
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         time_frame.append(now)
 
-        # Insert valid data into sensors table 
-        db.execute("INSERT INTO sensors (time, humidity1, temperature1, pressure1, pressure2) values (?, ?, ?, ?, ?)",(now, humidity_sensor1, temperature_sensor1, pressure_sensor1, pressure_sensor2))
-        db.commit()
         # Append new measurement into list
         list_humidity_sensor1.append(humidity_sensor1)
         list_temperature_sensor1.append(temperature_sensor1)
         list_pressure_sensor1.append(pressure_sensor1)
         list_pressure_sensor2.append(pressure_sensor2)
+
+        # Calculate the avaerage value of measurement every 5 minutes = 5*4(4 measurement per 15 seconds) = 20)
+        if len(list_humidity_sensor1)==8:
+            average_5_min_humidity = average_list(list_humidity_sensor1)
+            average_5_min_temperature = average_list(list_temperature_sensor1)
+            average_5_min_pressure1 = average_list(list_pressure_sensor1)
+            average_5_min_pressure2 = average_list(list_pressure_sensor2)
+
+            if average_5_min_temperature > temperature_threshold:
+                print("Temperature: PU risk")
+            else:
+                print("Temperature: normal")
+
+            if average_5_min_humidity > humidity_threshold:
+                print("Humidity: PU risk")
+            else:
+                print("Humidity: normal")
+            
+            if average_5_min_pressure1> pressure_threshold:
+                Tp1 += 5
+                if Tp1 >= 60:
+                    print("Pressure 1: PU risk", Tp1)
+                else:
+                    print("Pressure 2: normal", Tp1)
+            else:
+                print("Pressure 2: normal", Tp1)
+                Tp1 = 0
+
+            if average_5_min_pressure2> pressure_threshold:
+                Tp2 += 5
+                if Tp2 >= 60:
+                    print("Pressure 2: PU risk", Tp2)
+                else:
+                    print("Pressure 2: normal", Tp2)
+            else:
+                print("Pressure 2: normal", Tp2)
+                Tp2 = 0
+            
+            list_humidity_sensor1 = []
+            list_temperature_sensor1 = []
+            list_pressure_sensor1 = []
+            list_pressure_sensor2 = []
+            time_frame = []
+
+            # Insert valid data into sensors table 
+            #db.execute("INSERT INTO sensors (time, humidity1, temperature1, pressure1, pressure2) values (?, ?, ?, ?, ?)",(now, humidity_sensor1, temperature_sensor1, pressure_sensor1, pressure_sensor2))
+            #db.commit()
+
+def average_list(list_data):
+    return sum(list_data)/len(list_data)
+
+if __name__ == "__main__":
+    main()

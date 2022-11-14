@@ -4,67 +4,74 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 import sqlite3
- 
+from .models import User
+
 def index(request):
     #Take the data from sqlite3 database
+
     db = sqlite3.connect("mydatabase.db")
     data = db.execute("SELECT * FROM sensors")
     data = data.fetchall()
-    data_lastest = data[-1]
     return render (request, "measurement/index.html",{
-        "data": data_lastest
+        "data": data
     })
-    '''
-    #Divide data into chucks of 30 
-    number_data = len(data)
-    number_group_data = number_data//30
 
-    #Average every 30 chucks of data 
-    list_average30_humidity_sensor1 = []
-    list_average30_temperature_sensor1 = []
-    list_average30_pressure_sensor1 = []
-    list_average30_pressure_sensor2 = []
+def temperature(request):
+    pass
 
-    def avergae_list(list_item):
-        return sum(list_item)/len(list_item)
+def humidity(request):
+    pass
 
-    count = 0
-    for i in range(number_group_data):
-        list_humidity_sensor1 = []
-        list_temperature_sensor1 = []
-        list_pressure_sensor1 = []
-        list_pressure_sensor2 = []
+def pressure(request):
+    pass
 
-        data1 = db.execute("SELECT * FROM sensors WHERE id BETWEEN ? AND ?", (i*30,(i+1)*30,))
-        data1 = data1.fetchall()
-        for item in data1:
-            list_humidity_sensor1.append(item[2])
-            list_temperature_sensor1.append(item[3])
-            list_pressure_sensor1.append(item[4])
-            list_pressure_sensor2.append(item[5])
-    
-        humidity1 = avergae_list(list_humidity_sensor1)
-        list_average30_humidity_sensor1.append(humidity1)
-        temperature1 =avergae_list(list_temperature_sensor1)
-        list_average30_temperature_sensor1.append(temperature1)
-        pressure1 = avergae_list(list_pressure_sensor1)
-        list_average30_pressure_sensor1.append(pressure1)
-        pressure2 = avergae_list(list_pressure_sensor2)
-        list_average30_pressure_sensor2.append(pressure2)
+def login_view(request):
+    if request.method == "POST":
 
-    average_total_humidity = avergae_list(list_average30_humidity_sensor1)
-    average_total_temperature = avergae_list(list_average30_temperature_sensor1)
-    average_total_pressure_sensor1 = avergae_list(list_average30_pressure_sensor1)
-    average_total_pressure_sensor2 = avergae_list(list_average30_pressure_sensor2)
-    
-    return render (request, "measurement/index.html",{
-        "average_total_humidity": average_total_humidity,
-        "average_total_temperature": average_total_temperature,
-        "average_total_pressure_sensor1": average_total_pressure_sensor1,
-        "average_total_pressure_sensor2": average_total_pressure_sensor2,
-        "list_average30_humidity_sensor1": list_average30_humidity_sensor1,
-        "list_average30_temperature_sensor1": list_average30_temperature_sensor1,
-        "list_average30_pressure_sensor1": list_average30_pressure_sensor1,
-        "list_average30_pressure_sensor2": list_average30_pressure_sensor2
-    })'''
-# Create your views here.
+        # Attempt to sign user in
+        username = request.POST["username"]
+        password = request.POST["password"]
+        user = authenticate(request, username=username, password=password)
+
+        # Check if authentication successful
+        if user is not None:
+            login(request, user)
+            return HttpResponseRedirect(reverse("index"))
+        else:
+            return render(request, "measurement/login.html", {
+                "message": "Invalid username and/or password."
+            })
+    else:
+        return render(request, "measurement/login.html")
+
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect(reverse("index"))
+
+
+def register(request):
+    if request.method == "POST":
+        username = request.POST["username"]
+        email = request.POST["email"]
+
+        # Ensure password matches confirmation
+        password = request.POST["password"]
+        confirmation = request.POST["confirmation"]
+        if password != confirmation:
+            return render(request, "measurement/register.html", {
+                "message": "Passwords must match."
+            })
+
+        # Attempt to create new user
+        try:
+            user = User.objects.create_user(username, email, password)
+            user.save()
+        except IntegrityError:
+            return render(request, "measurement/register.html", {
+                "message": "Username already taken."
+            })
+        login(request, user)
+        return HttpResponseRedirect(reverse("index"))
+    else:
+        return render(request, "measurement/register.html")
