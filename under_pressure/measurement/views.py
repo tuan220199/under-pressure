@@ -7,8 +7,9 @@ import sqlite3
 from .models import User, Temperature, Humidity, Pressure1, Pressure2
 
 def index(request):
-
+    #Create the default value for Pu risk
     risk_PU = False
+    
     #current user
     current_user = request.user
 
@@ -52,13 +53,48 @@ def index(request):
         "real_time": real_time
     })
 def temperature(request):
-    pass
+    #current user
+    current_user = request.user
+
+    #Find all temperature data related to user 
+    temperature_objects = Temperature.objects.filter(user_temperature = current_user.id)
+
+    return render(request, "measurement/temperature.html", {
+        "temperature_objects": temperature_objects
+    })
 
 def humidity(request):
-    pass
+    #current user
+    current_user = request.user
 
-def pressure(request):
-    pass
+    #Find all humidity data related to user 
+    humidity_objects = Humidity.objects.filter(user_humidity = current_user.id)
+
+    return render(request, "measurement/humidity.html", {
+        "humidity_objects": humidity_objects
+    })
+
+def pressure1(request):
+    #current user
+    current_user = request.user
+
+    #Find all humidity data related to user 
+    pressure1_objects = Pressure1.objects.filter(user_pressure1 = current_user.id)
+
+    return render(request, "measurement/pressure1.html", {
+        "pressure1_objects": pressure1_objects
+    })
+
+def pressure2(request):
+    #current user
+    current_user = request.user
+
+    #Find all humidity data related to user 
+    pressure2_objects = Pressure2.objects.filter(user_pressure2 = current_user.id)
+
+    return render(request, "measurement/pressure2.html", {
+        "pressure2_objects": pressure2_objects
+    })
 
 def login_view(request):
     if request.method == "POST":
@@ -82,7 +118,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return HttpResponseRedirect(reverse("index"))
+    return HttpResponseRedirect(reverse("login"))
 
 
 def register(request):
