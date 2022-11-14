@@ -4,18 +4,53 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 import sqlite3
-from .models import User
+from .models import User, Temperature, Humidity, Pressure1, Pressure2
 
 def index(request):
-    #Take the data from sqlite3 database
 
-    db = sqlite3.connect("mydatabase.db")
-    data = db.execute("SELECT * FROM sensors")
-    data = data.fetchall()
+    risk_PU = False
+    #current user
+    current_user = request.user
+
+    #Take the data from model table in databse
+    lastest_temperature_object = Temperature.objects.filter(user_temperature = current_user.id).order_by('-id').first()
+    lastest_temperature = lastest_temperature_object.value
+    risk_PU_temperature = lastest_temperature_object.risk_PU
+    real_time = lastest_temperature_object.time
+    if risk_PU_temperature == True:
+        risk_PU = True 
+    
+    lastest_humidity_object = Humidity.objects.filter(user_humidity = current_user.id).order_by('-id').first()
+    lastest_humidity = lastest_humidity_object.value
+    risk_PU_humidity = lastest_humidity_object.risk_PU
+    if risk_PU_humidity == True:
+        risk_PU = True
+
+    lastest_pressure1_object = Pressure1.objects.filter(user_pressure1 = current_user.id).order_by('-id').first()
+    lastest_pressure1 = lastest_pressure1_object.pressure_value
+    lastest_Tp_pressure1 = lastest_pressure1_object.Tp_value
+    risk_PU_pressure1 = lastest_pressure1_object.risk_PU
+    if risk_PU_pressure1 == True:
+        risk_PU = True
+
+
+    lastest_pressure2_object = Pressure2.objects.filter(user_pressure2 = current_user.id).order_by('-id').first()
+    lastest_pressure2 = lastest_pressure2_object.pressure_value
+    lastest_Tp_pressure2 = lastest_pressure2_object.Tp_value
+    risk_PU_pressure2 = lastest_pressure2_object.risk_PU
+    if risk_PU_pressure2 == True:
+        risk_PU = True
+   
     return render (request, "measurement/index.html",{
-        "data": data
+        "lastest_temperature": lastest_temperature,
+        "latest_humidity": lastest_humidity,
+        "latest_pressure1": lastest_pressure1,
+        "lastest_Tp_pressure1": lastest_Tp_pressure1,
+        "latest_pressure2": lastest_pressure2,
+        "lastest_Tp_pressure2": lastest_Tp_pressure2,
+        "risk_PU": risk_PU,
+        "real_time": real_time
     })
-
 def temperature(request):
     pass
 
