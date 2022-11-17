@@ -69,35 +69,35 @@ def main():
 
             if average_5_min_temperature > temperature_threshold:
                 PU_risk = True
-                db.execute("INSERT INTO measurement_temperature (value, time, risk_PU, user_temperature_id) values (?, ?, ?, ?)",( average_5_min_temperature, now, PU_risk, 1))
+                db.execute("INSERT INTO measurement_temperature (value, time, risk_PU, user_temperature_id) values (?, ?, ?, ?)",( average_5_min_temperature, now, PU_risk, 2))
                 db.commit()
             else:
                 PU_risk = False
-                db.execute("INSERT INTO measurement_temperature (value, time, risk_PU, user_temperature_id) values (?, ?, ?, ?)",(average_5_min_temperature, now, PU_risk, 1))
+                db.execute("INSERT INTO measurement_temperature (value, time, risk_PU, user_temperature_id) values (?, ?, ?, ?)",(average_5_min_temperature, now, PU_risk, 2))
                 db.commit()         
 
             if average_5_min_humidity > humidity_threshold:
                 PU_risk = True
-                db.execute("INSERT INTO measurement_humidity (value, time, risk_PU, user_humidity_id) values (?, ?, ?, ?)",(average_5_min_humidity, now, PU_risk, 1))
+                db.execute("INSERT INTO measurement_humidity (value, time, risk_PU, user_humidity_id) values (?, ?, ?, ?)",(average_5_min_humidity, now, PU_risk, 2))
                 db.commit()
             else:
                 PU_risk = False
-                db.execute("INSERT INTO measurement_humidity (value, time, risk_PU, user_humidity_id) values (?, ?, ?, ?)",(average_5_min_humidity, now, PU_risk, 1))
+                db.execute("INSERT INTO measurement_humidity (value, time, risk_PU, user_humidity_id) values (?, ?, ?, ?)",(average_5_min_humidity, now, PU_risk, 2))
                 db.commit()
             
             if average_5_min_pressure1> pressure_threshold:
                 Tp1 += 5
                 if Tp1 >= 60:
                     PU_risk = True
-                    db.execute("INSERT INTO measurement_pressure1 (pressure_value, Tp_value, time, risk_PU, user_pressure1_id) values (?, ?, ?, ?, ?)",(average_5_min_pressure1, Tp1, now, PU_risk, 1))
+                    db.execute("INSERT INTO measurement_pressure1 (pressure_value, Tp_value, time, risk_PU, user_pressure1_id) values (?, ?, ?, ?, ?)",(average_5_min_pressure1, Tp1, now, PU_risk, 2))
                     db.commit()
                 else:
                     PU_risk = False
-                    db.execute("INSERT INTO measurement_pressure1 (pressure_value, Tp_value, time, risk_PU, user_pressure1_id) values (?, ?, ?, ?, ?)",(average_5_min_pressure1, Tp1, now, PU_risk, 1))
+                    db.execute("INSERT INTO measurement_pressure1 (pressure_value, Tp_value, time, risk_PU, user_pressure1_id) values (?, ?, ?, ?, ?)",(average_5_min_pressure1, Tp1, now, PU_risk, 2))
                     db.commit()
             else:
                 PU_risk = False
-                db.execute("INSERT INTO measurement_pressure1 (pressure_value, Tp_value, time, risk_PU, user_pressure1_id) values (?, ?, ?, ?, ?)",(average_5_min_pressure1, Tp1, now, PU_risk, 1))
+                db.execute("INSERT INTO measurement_pressure1 (pressure_value, Tp_value, time, risk_PU, user_pressure1_id) values (?, ?, ?, ?, ?)",(average_5_min_pressure1, Tp1, now, PU_risk, 2))
                 db.commit()
                 Tp1 = 0
 
@@ -105,15 +105,15 @@ def main():
                 Tp2 += 5
                 if Tp2 >= 60:
                     PU_risk = True
-                    db.execute("INSERT INTO measurement_pressure2 (pressure_value, Tp_value, time, risk_PU, user_pressure1_id) values (?, ?, ?, ?, ?)",(average_5_min_pressure2, Tp2, now, PU_risk, 1))
+                    db.execute("INSERT INTO measurement_pressure2 (pressure_value, Tp_value, time, risk_PU, user_pressure1_id) values (?, ?, ?, ?, ?)",(average_5_min_pressure2, Tp2, now, PU_risk, 2))
                     db.commit()
                 else:
                     PU_risk = False
-                    db.execute("INSERT INTO measurement_pressure2 (pressure_value, Tp_value, time, risk_PU, user_pressure1_id) values (?, ?, ?, ?, ?)",(average_5_min_pressure2, Tp2, now, PU_risk, 1))
+                    db.execute("INSERT INTO measurement_pressure2 (pressure_value, Tp_value, time, risk_PU, user_pressure1_id) values (?, ?, ?, ?, ?)",(average_5_min_pressure2, Tp2, now, PU_risk, 2))
                     db.commit()
             else:
                 PU_risk = False
-                db.execute("INSERT INTO measurement_pressure2 (pressure_value, Tp_value, time, risk_PU, user_pressure2_id) values (?, ?, ?, ?, ?)",(average_5_min_pressure2, Tp2, now, PU_risk, 1))
+                db.execute("INSERT INTO measurement_pressure2 (pressure_value, Tp_value, time, risk_PU, user_pressure2_id) values (?, ?, ?, ?, ?)",(average_5_min_pressure2, Tp2, now, PU_risk, 2))
                 db.commit()
                 Tp2 = 0
 
