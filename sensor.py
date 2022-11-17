@@ -113,7 +113,7 @@ def main():
                     db.commit()
             else:
                 PU_risk = False
-                db.execute("INSERT INTO measurement_pressure2 (pressure_value, Tp_value, time, risk_PU, user_pressure1_id) values (?, ?, ?, ?, ?)",(average_5_min_pressure2, Tp2, now, PU_risk, 1))
+                db.execute("INSERT INTO measurement_pressure2 (pressure_value, Tp_value, time, risk_PU, user_pressure2_id) values (?, ?, ?, ?, ?)",(average_5_min_pressure2, Tp2, now, PU_risk, 1))
                 db.commit()
                 Tp2 = 0
 
